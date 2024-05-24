@@ -1,0 +1,35 @@
+services:
+  source_db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    networks:
+      - elt_network
+    ports:
+      - 5555:5554
+  destination_db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    networks:
+      - elt_network
+    ports:
+      - 5556:5554
+  elt_script:
+    build:
+      context: ./scripts
+      dockerfile: Dockerfile
+    command: ["python", "elt_script.py"]
+    networks:
+      - etl_network
+    depends_on:
+      - source_db
+      - destination_db
+  
+  networks:
+    elt_network:
+      driver: bridge
