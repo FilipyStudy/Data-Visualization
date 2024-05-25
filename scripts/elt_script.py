@@ -1,20 +1,14 @@
 import pandas as pd
 import subprocess, os, psycopg2, time
 
-for i in range(16):
-    counter = 1
-    print(f"Waiting every module goes on. Time passed: {counter}")
-    counter += 1
-    time.sleep(1)
-
 SOURCE_DB = {
     'USER': 'postgres',
-    'PASSWORD': 'secret',
+    'PASSWORD': 'password',
     'HOST': 'source_db'
 }
 DESTINATION_DB = {
     'USER': 'postgres',
-    'PASSWORD': 'secret',
+    'PASSWORD': 'password',
     'HOST': 'destination_db'
 }
 

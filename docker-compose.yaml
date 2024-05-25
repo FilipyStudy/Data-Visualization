@@ -31,7 +31,7 @@ services:
     restart: on-failure
     depends_on:
       - source_db
-      - destination_db
+      - destination_db  
   
 networks:
   etl_network:
