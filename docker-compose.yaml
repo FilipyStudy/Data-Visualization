@@ -1,3 +1,5 @@
+version: '2'
+
 services:
   source_db:
     image: postgres
@@ -6,7 +8,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     networks:
-      - elt_network
+      - etl_network
     ports:
       - 5555:5554
   destination_db:
@@ -16,7 +18,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     networks:
-      - elt_network
+      - etl_network
     ports:
       - 5556:5554
   elt_script:
@@ -26,10 +28,11 @@ services:
     command: ["python", "elt_script.py"]
     networks:
       - etl_network
+    restart: on-failure
     depends_on:
       - source_db
       - destination_db
   
-  networks:
-    elt_network:
-      driver: bridge
+networks:
+  etl_network:
+    driver: bridge
