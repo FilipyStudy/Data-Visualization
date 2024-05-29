@@ -1,48 +1,65 @@
 import pandas as pd
-import subprocess, os, psycopg2, time
+import subprocess, os, time, sqlalchemy
+from mysql import connector
 
-SOURCE_DB = {
-    'USER': 'postgres',
+#Create a dict structure with informations about the database service/process
+DB = {
+    'USER': 'root',
     'PASSWORD': 'password',
-    'HOST': 'source_db'
-}
-DESTINATION_DB = {
-    'USER': 'postgres',
-    'PASSWORD': 'password',
-    'HOST': 'destination_db'
+    'DATABASE': 'db',
+    'HOST': 'localhost'
 }
 
-def wait_ps(max_tries = 5):
-    retries = 0
-    result = subprocess.run(
-        ['pg_isready', '-h', SOURCE_DB['host']],
-        check=True,
-        capture_output=True,
-        text=True
-    )
-    while retries < 5:
-        if 'accepting connections' in result.stdout:
+#Check if the database service is alive to proceed, if not the function will trie 5 times until the process start.
+def check_db():
+    ping_db = subprocess.run(["mysqladmin" ,"ping", "-h", "localhost"],
+                             capture_output=True,
+                             text=True)
+    print(f"First check: {ping_db.stdout()}")
+    if ('mysqld is alive' in ping_db.stdout()):
+        return True
+    else:
+        retries = 0
+        while ('mysqld is alive' not in ping_db.stdout() and retries <= 5):
+            print(f"Retrying to see the running status of the database for the {retries + 1} time.")
+            time.sleep(5) #Wait 5 seconds to check again.
+            ping_db = subprocess.run(['mysqladmin' ,'ping', '-h', 'localhost'], 
+                        capture_output=True,
+                        text=True)
+            retries += 1
+            print(f"Retry output: {ping_db.stdout()}")
+        if ('mysqld is alive' in ping_db.stdout()):
             return True
         else:
-            retries += 1
-            time.sleep(2)
-    return False
-
-CONN_SOURCE = psycopg2.connect(host = SOURCE_DB['HOST'], 
-                               database = 'source_db', 
-                               user = SOURCE_DB['USER'], 
-                               password = SOURCE_DB['PASSWORD'])
-
-if os.path.exists("database"):
+            return False
+    
+if (os.path.exists("database")):
     with open (os.path.join("database", "weather_data.csv")) as file:
         csv_database = pd.read_csv(file)
+        print("CSV file are ready.")
+else: 
+    print('Database path was not found.')
 
-if (wait_ps()):
-    source_database = csv_database.to_sql('source_db', 
-                                           CONN_SOURCE, 
-                                           if_exists='replace')
-else:
-    print("The database path was not found.")
-    exit()
 
-print(source_database.head())
+#Return a cursor object to manipulate the database.
+def create_cursor():
+    if (check_db()):
+        conn = connector.Connect(host=DB['HOST'],
+                                user=DB['USER'],
+                                password=DB['PASSWORD'])
+        #Create a engine to insert the data into a mysql table with pandas module.
+        ENGINE = sqlalchemy.create_engine(f'mysql://{DB['USER']}:{DB["PASSWORD"]}@{DB["HOST"]}')
+        csv_database.to_sql(DB['DATABASE'], ENGINE, if_exists='replace')
+        print('Database connected and cursor created.')
+        cursor = conn.cursor()
+        return cursor
+    else:
+        print("The database was not running properly.")
+
+#Just for test purposes.
+cursor = create_cursor()
+cursor.execute('SELECT * FROM db')
+cursor.fetchall
+print(cursor.head())
+
+#TODO: Transform and Load process of the data.

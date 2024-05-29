@@ -1,26 +1,18 @@
-version: '2'
+version: '3'
 
 services:
-  source_db:
-    image: postgres
+  db:
+    image: mysql
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
     networks:
       - etl_network
-    ports:
-      - 5555:5554
-  destination_db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-    networks:
-      - etl_network
-    ports:
-      - 5556:5554
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      
   elt_script:
     build:
       context: ./scripts
@@ -28,10 +20,9 @@ services:
     command: ["python", "elt_script.py"]
     networks:
       - etl_network
-    restart: on-failure
     depends_on:
-      - source_db
-      - destination_db  
+      db:
+        condition: service_healthy
   
 networks:
   etl_network:

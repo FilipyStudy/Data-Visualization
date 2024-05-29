@@ -6,7 +6,7 @@ COPY /requirements.txt .
 COPY elt_script.py .
 
 RUN apt-get update -y
-RUN apt-get install -y postgresql-client python3-pip
+RUN apt-get install -y python3-pip default-mysql-client
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
