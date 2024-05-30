@@ -12,6 +12,7 @@ DB = {
 
 #Check if the database service is alive to proceed, if not the function will trie 5 times until the process start.
 def check_db():
+    time.sleep(15) #Wait 15 seconds to give time enough to mysql socket get ready.
     ping_db = subprocess.run(["mysqladmin" ,"ping", f"-p{DB['PASSWORD']}"],
                              capture_output=True,
                              text=True)
@@ -23,7 +24,7 @@ def check_db():
         retries = 0
         while ('mysqld is alive' not in ping_db.stdout and retries <= 5):
             print(f"Retrying to see the running status of the database for the {retries + 1} time.")
-            time.sleep(5) #Wait 5 seconds to check again.
+            time.sleep(10) #Wait 5 seconds to check again.
             ping_db = subprocess.run(['mysqladmin' ,'ping', f"-p{DB['PASSWORD']}"], 
                         capture_output=True,
                         text=True)
