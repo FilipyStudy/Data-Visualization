@@ -6,8 +6,6 @@ services:
     container_name: database
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: filipy
-      MYSQL_PASSWORD: senha
     restart: always
     networks:
       - project_network
@@ -35,8 +33,6 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - PMA_ARBITRARY=1
       - PMA_HOST=db
-      - MYSQL_USER=filipy
-      - MYSQL_PASSWORD=senha
     ports:
       - "8080:80"
     networks:
