@@ -3,15 +3,26 @@ version: 'latest'
 services:
   db:
     image: mysql:latest
+    container_name: database
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: filipy
+      MYSQL_PASSWORD: senha
     restart: always
     networks:
       - project_network
-  
+    cap_add:
+      - SYS_NICE
+    command: --init-file /docker-entrypoint-initdb.d/init.sql
+    volumes:
+      - ./databases/init.sql:/docker-entrypoint-initdb.d/init.sql
+
   python_scripts:
     command: ["python", "etl_script.py"]
-    context: ./files
+    container_name: python_script
+    build:
+      context: ./files
+      dockerfile: Dockerfile
     depends_on:
       - db
     networks:
@@ -19,10 +30,13 @@ services:
   
   phpmyadmin:
     image: phpmyadmin:latest
+    container_name: phpmyadmin
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - PMA_ARBITRARY=1
       - PMA_HOST=db
+      - MYSQL_USER=filipy
+      - MYSQL_PASSWORD=senha
     ports:
       - "8080:80"
     networks:
