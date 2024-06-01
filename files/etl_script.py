@@ -1,6 +1,8 @@
+#Import all libs
 from connect_db import connect_db
 import pandas as pd
 from pathlib import Path
+
 #Database access informations
 DB_CONFIG = {
     'host': 'db',
