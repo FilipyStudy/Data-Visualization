@@ -1,10 +1,11 @@
 from connect_db import connect_db
-
+import pandas as pd
+from pathlib import Path
 #Database access informations
 DB_CONFIG = {
-    'host': 'localhost',
+    'host': 'db',
     'database': 'treated_db',
-    'user': 'root',
+    'user': 'filipy',
     'user_pass': 'root'
 }
 
@@ -15,7 +16,25 @@ connect_db = connect_db(host=DB_CONFIG['host'],
                         password=DB_CONFIG['user_pass'])
 
 #Create a connection
-cnx = connect_db.connect
+cnx = connect_db.connect()
 
 #Create a cursor to manipulate the database
-cursor = connect_db.create_cursor
+cursor = connect_db.create_cursor()
+
+#Create engine for converting the csv file to a sql table.
+engine = connect_db.create_engine()
+
+#Open the csv file and pass it to a sql table
+with open(Path("databases/weather_data.csv")) as file:
+    csv_data = pd.read_csv(file)
+
+    sql_data = csv_data.to_sql(name="treated_db",
+                               engine=engine,
+                               if_exists='replace',
+                               chunksize=100)
+
+#Fetches all remaining rows 
+sql_data.fetchall()
+
+#Print the first 5 rows in the table
+print(sql_data.head())
