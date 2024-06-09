@@ -1,5 +1,6 @@
 from mysql import connector
 from sqlalchemy import create_engine
+import weakref
 class connect_db:
     #Contructor of the class
     def __init__(self, host, database, password, user):
@@ -10,11 +11,11 @@ class connect_db:
 
     #Create and return a connection object to connect python to a database
     def connect(self):
-        conn = connector.connect(host=self.host, 
+       conn = connector.connect(host=self.host, 
                                  database=self.database,
                                  password = self.password,
                                  user=self.user)
-        return conn
+       return conn
     
     #Create and return a cursor to modify and work over tables 
     def create_cursor(self):
@@ -39,7 +40,6 @@ class connect_db:
             return False
     
     #Create and return a engine to work with pandas module
-    @staticmethod    
-    def create_engine():
-        engine = create_engine("mysql://root:root@db/treated_db")
+    def create_engine(self):
+        engine = create_engine(f"mysql+mysqldb://{self.user}:{self.password}@{self.host}/{self.database}")
         return engine

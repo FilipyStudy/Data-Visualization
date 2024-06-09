@@ -7,7 +7,7 @@ from pathlib import Path
 DB_CONFIG = {
     'host': 'db',
     'database': 'treated_db',
-    'user': 'filipy',
+    'user': 'root',
     'user_pass': 'root'
 }
 
@@ -21,7 +21,7 @@ connect_db = connect_db(host=DB_CONFIG['host'],
 cnx = connect_db.connect()
 
 #Create a cursor to manipulate the database
-cursor = connect_db.create_cursor()
+cursor = cnx.cursor()
 
 #Create engine for converting the csv file to a sql table.
 engine = connect_db.create_engine()
@@ -30,13 +30,12 @@ engine = connect_db.create_engine()
 with open(Path("databases/weather_data.csv")) as file:
     csv_data = pd.read_csv(file)
 
-    sql_data = csv_data.to_sql(name="treated_db",
-                               engine=engine,
+    sql_data = csv_data.to_sql(name=f"{DB_CONFIG['database']}",
+                               con=engine,
                                if_exists='replace',
                                chunksize=100)
 
-#Fetches all remaining rows 
-sql_data.fetchall()
+cursor.execute(f"SELECT * FROM {DB_CONFIG['database']}")
+result = cursor.fetchall()
 
-#Print the first 5 rows in the table
-print(sql_data.head())
+print(result)
