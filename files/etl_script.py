@@ -2,6 +2,7 @@
 from connect_db import connect_db
 import pandas as pd
 from pathlib import Path
+import matplotlib as plt
 
 #Database access informations
 DB_CONFIG = {
@@ -35,7 +36,19 @@ with open(Path("databases/weather_data.csv")) as file:
                                if_exists='replace',
                                chunksize=100)
 
-cursor.execute(f"SELECT * FROM {DB_CONFIG['database']}")
-result = cursor.fetchall()
+#Read the database to a dataframe
+df = pd.read_sql(DB_CONFIG['database'],
+                 engine, 
+                 'Date_Time')
 
-print(result)
+rainfall = df['Precipitation_mm'].to_list()
+
+#Create a figure
+fig = plt.figure(figsize=(10.0, 7.0), dpi=100)
+
+ax = fig.add_axes([0,0,1,1])
+
+ax.plot(rainfall)
+
+#Show the graph
+plt.show()
