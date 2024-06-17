@@ -7,6 +7,8 @@ This project is focused on show and learn ML concepts to predic a virtual precip
 - Python
 - Docker
 - MySQL
+- Pandas
+- Matplotlib
 
 # What i working on?
 
