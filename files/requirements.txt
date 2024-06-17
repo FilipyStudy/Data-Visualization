@@ -3,3 +3,5 @@ pandas
 sqlalchemy
 mysqlclient
 matplotlib
+numpy
+scikit-learn
