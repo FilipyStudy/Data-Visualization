@@ -27,7 +27,7 @@ When i decided to start this project i was focused and just show a plot of the d
 
 I used the Linear Regression algorithm to analyze the data. This algorithm get two variables one as a target value and two variables for the training data. The algorithm tests the data and discover a relation between the input values and the target value. Then, he create a function 
 
-Y = f(x)
+![y=f(x)](https://pbs.twimg.com/media/FTZc2PGWIAMDFS5.jpg)
 
 Then, he calculate and predict a result.
 
