@@ -21,5 +21,5 @@ When i decided to start this project i was focused and just show a plot of the d
     Used to train the ML algorithm with the data.
 
 # Plot image:
-![plot image](https://imgur.com/a/nQPVzD7.png)
+![plot image](https://i.imgur.com/a3vBMuu.png)
 
