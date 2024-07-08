@@ -20,9 +20,6 @@ When i decided to start this project i was focused and just show a plot of the d
 - SciKit-Learn:
     Used to train the ML algorithm with the data.
 
-# What i working on?
-
-- ETL Pipeline 🛠️
-- ML Algorithm 🔜
-- Data Visualization 🔜
+# Plot image:
+![plot image](https://imgur.com/a/nQPVzD7.png)
 
