@@ -16,6 +16,6 @@ When i decided to start this project i was focused and just show a plot of the d
 - SciKit-Learn:
     Used to train the ML algorithm with the data.
 
-# Conclusion:
+# What i want?
 
-Unfortunately the data dosn't have correlation between the variables. By this way it's not a efficient way to train a model based on this data.
+For now i will search for some correlation between the data variables, my objective is to perform a prediction of the precipitation. The data is a sintetic made data, so is not so simple. I will perform the pearson method to find the correlation, if the correlation (x), -1 <= x <= 1 the model will be possible.
