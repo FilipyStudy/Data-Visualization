@@ -76,9 +76,10 @@ if __name__ == '__main__':
 
 
 #Plot everything
-    plt.scatter(df['Precipitation_mm'])
+    plt.scatter(df['Precipitation_mm'], y1)
+    plt.scatter(df['Precipitation_mm'], y2)
+    plt.scatter(df['Precipitation_mm'], y3)
+
     plt.show()
 
 #Print the correlation
-    df_correlation = correlation(df, ['Location', 'Date_Time'])
-    print(df_correlation)
