@@ -37,6 +37,7 @@ def mean_values(dataframe, time_col, sort_by):
     try:
         if type(dataframe) != pd.DataFrame or type(time_col) != str or type(sort_by) != list:
             return TypeError("Please, use a valid parameter type.")
+
         format_datetime = lambda x: datetime.date(x)
         dataframe = dataframe.sort_values(by=sort_by)
         dataframe[time_col] = pd.to_datetime(dataframe[time_col])
@@ -48,12 +49,36 @@ def mean_values(dataframe, time_col, sort_by):
         print(f'Something bad occurred on measuring the average of the items: {e}')
 
 
-#def correlation(x):
-#    if type(x) != pd.DataFrame:
-#        return ValueError('Please, use a dataframe as parameter')
+#Calculate the correlation between the variables using Spearman  method
+def correlation(dataframe, ignore):
+    try:
+        if type(dataframe) != pd.DataFrame:
+            return ValueError('Please, use a dataframe as parameter')
+
+        else:
+            x_columns = [i for i in dataframe.columns if i not in ignore or i != ignore]
+            y = 1 - (6 * np.sum(np.pow(np.mean(dataframe[x_columns]), 2))) / np.pow((len(x_columns) * (np.pow(len(x_columns), 3) - 1)), 2)
+            return y
+
+    except Exception as e:
+        print(f'Something bad as occurred during the calculation of the correlation: {e}')
+
+#Init everything
+if __name__ == '__main__':
+    df = import_df(df_path = f'{'databases/weather_data.csv'}', op = 'r', type_of = 'csv')
+    df = mean_values(dataframe = df, time_col = 'Date_Time', sort_by = ['Location', 'Date_Time'])
 
 
-#if __name__ == '__main__':
-    #df = import_df(df_path = f'{'databases/weather_data.csv'}', op = 'r', type_of = 'csv')
-    #df = mean_values(dataframe = df, time_col = 'Date_Time', sort_by = ['Location', 'Date_Time'])
+#Loc the variables
+    y1 = df['Humidity_pct']
+    y2 = df['Temperature_C']
+    y3 = df['Wind_Speed_kmh']
 
+
+#Plot everything
+    plt.scatter(df['Precipitation_mm'])
+    plt.show()
+
+#Print the correlation
+    df_correlation = correlation(df, ['Location', 'Date_Time'])
+    print(df_correlation)
